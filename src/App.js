@@ -23,7 +23,7 @@ class WeatherDisplay extends Component {
   componentDidMount() {
     const zip = this.props.zip;
    
-    const URL = "http://food2fork.com/api/search?key=1306fe6053090625bc74a2aba9e7308b&count=1&q=" +zip; 
+    const URL = "https://food2fork.com/api/search?key=1306fe6053090625bc74a2aba9e7308b&count=1&q=" +zip; 
     fetch(URL).then(res => res.json()).then(json => {
       this.setState({ weatherData: json });
     });
