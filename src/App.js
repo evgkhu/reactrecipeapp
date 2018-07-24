@@ -2,66 +2,69 @@ import React, { Component } from "react";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-import "bootswatch/dist/united/bootstrap.css";
+import "bootswatch/dist/sketchy/bootstrap.css";
 
-import { Navbar, NavItem, Nav, Grid, Row, Col } from "react-bootstrap";
+import { Image, Navbar, NavItem, Nav, Grid, Row, Col } from "react-bootstrap";
 
-const PLACES = [
-  { name: "Sandwich", zip: "Sandwich" },
-  { name: "Omlet", zip: "Omlet" },
-  { name: "Beef", zip: "beef" },
-  { name: "Pasta", zip: "pasta" }
+const Meals = [
+  { name: "Sandwich", rid: "35382" },
+  { name: "Pizza", rid: "47746" },
+  { name: "Beef", rid: "49640" },
+  { name: "Pasta", rid: "47025" }
 ];
 
-class WeatherDisplay extends Component {
+
+class MealsDisplay extends Component {
   constructor() {
     super();
     this.state = {
-      weatherData: null
+      mealsData: null
     };
     
   }
   
   componentDidMount= () =>{
-    const zip = this.props.zip;
-    const URL = "https://food2fork.com/api/search?key=1306fe6053090625bc74a2aba9e7308b&count=1&q=" +zip; 
-    
-   fetch(URL,  {
-                      mode: "no-cors",
-                      method: "GET",
-                      headers: {
-                        "Accept": "application/json",
-                        'Access-Control-Request-Headers':'content-type',  
-                          'Access-Control-Allow-Origin':'*',
-                      },} )
-                      .then(response => {
-                      if (response.ok) {
-
-                          response.json().then(json => {
-
-                            console.warn( JSON.stringify(json.msg ));
-                              this.setState({
-                                 weatherData: JSON.stringify(json)
-                            }).bind(this)
-
-                        });
-                      }
-                    }); }
-
+    const rid = this.props.rid;
+    const URL = "http://food2fork.com/api/get?key=1306fe6053090625bc74a2aba9e7308b&rId=" +rid; 
+    let proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+     fetch(proxyUrl+URL)
+      .then(response => response.json())
+      .then(mealsData => this.setState({ mealsData }));
+    }
+   
   render() {
-    const weatherData = this.state.weatherData;
-    if (!weatherData) return <div>Loading</div>;
+    const mealsData = this.state.mealsData;
+    if (!mealsData) return <div>Loading</div>;
      
-    const recipes = weatherData.recipes[0];
-  
+    const recipes = mealsData.recipe;
+    const ingredients = mealsData.recipe.ingredients.map((data) => {
+  return (
+    <li>{data}</li>
+        );
+      });
+   
+   
     return (
       <div>
-        <h1>
-          {recipes.title}
-          <img src={recipes.image_url} alt=''  />
-        </h1>
-        <p>Current: {weatherData.count.ingridients}</p>
-      
+      <Grid>
+        <Row className="show-grid">
+          <Col xs={12} md={8}>
+             <h1> {recipes.title} </h1>
+          </Col>
+  
+        </Row>
+        <Row className="show-grid">
+          <Col xs={12} md={8}>
+            <Image src={recipes.image_url} responsive  rounded />
+          </Col>
+        </Row> 
+        <br />
+        <Row className="show-grid">
+          <Col xs={12} md={8}>
+            <p>Ingredients</p> {ingredients}
+          </Col>
+        </Row>
+      </Grid>
       </div>
     );
   }
@@ -71,17 +74,17 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      activePlace: 0
+      activeMeal: 0
     };
   }
   render() {
-    const activePlace = this.state.activePlace;
+    const activeMeal = this.state.activeMeal;
     return (
       <div>
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-              React Simple Weather App
+              React Recipes App
             </Navbar.Brand>
           </Navbar.Header>
         </Navbar>
@@ -92,18 +95,18 @@ class App extends Component {
               <Nav
                 bsStyle="pills"
                 stacked
-                activeKey={activePlace}
+                activeKey={activeMeal}
                 onSelect={index => {
-                  this.setState({ activePlace: index });
+                  this.setState({ activeMeal: index });
                 }}
               >
-                {PLACES.map((place, index) => (
-                  <NavItem key={index} eventKey={index}>{place.name}</NavItem>
+                {Meals.map((meal, index) => (
+                  <NavItem key={index} eventKey={index}>{meal.name}</NavItem>
                 ))}
               </Nav>
             </Col>
             <Col md={8} sm={8}>
-              <WeatherDisplay key={activePlace} zip={PLACES[activePlace].zip} />
+              <MealsDisplay key={activeMeal} rid={Meals[activeMeal].rid} />
             </Col>
           </Row>
         </Grid>

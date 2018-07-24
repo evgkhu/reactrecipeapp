@@ -29,6 +29,10 @@
 
 p, li, span.navbar-brand {font-size: 2em;}
 
+@media (max-width:576px){
+span.navbar-brand {font-size: 1.5em;}
+}
+
 .nav-stacked>li {
     width: 100%;
 }
