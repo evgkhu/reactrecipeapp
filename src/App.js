@@ -19,15 +19,35 @@ class WeatherDisplay extends Component {
     this.state = {
       weatherData: null
     };
+    
   }
-  componentDidMount() {
+  
+  componentDidMount= () =>{
     const zip = this.props.zip;
-   
     const URL = "https://food2fork.com/api/search?key=1306fe6053090625bc74a2aba9e7308b&count=1&q=" +zip; 
-    fetch(URL).then(res => res.json()).then(json => {
-      this.setState({ weatherData: json });
-    });
-  }
+    
+   fetch(URL,  {
+                      mode: "no-cors",
+                      method: "GET",
+                      headers: {
+                        "Accept": "application/json",
+                        'Access-Control-Request-Headers':'content-type',  
+                          'Access-Control-Allow-Origin':'*',
+                      },} )
+                      .then(response => {
+                      if (response.ok) {
+
+                          response.json().then(json => {
+
+                            console.warn( JSON.stringify(json.msg ));
+                              this.setState({
+                                 weatherData: JSON.stringify(json)
+                            }).bind(this)
+
+                        });
+                      }
+                    }); }
+
   render() {
     const weatherData = this.state.weatherData;
     if (!weatherData) return <div>Loading</div>;
