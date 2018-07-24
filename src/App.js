@@ -22,9 +22,9 @@ class WeatherDisplay extends Component {
   }
   componentDidMount() {
     const zip = this.props.zip;
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+   
     const URL = "http://food2fork.com/api/search?key=1306fe6053090625bc74a2aba9e7308b&count=1&q=" +zip; 
-    fetch(proxyUrl + URL).then(res => res.json()).then(json => {
+    fetch(URL).then(res => res.json()).then(json => {
       this.setState({ weatherData: json });
     });
   }
@@ -32,15 +32,15 @@ class WeatherDisplay extends Component {
     const weatherData = this.state.weatherData;
     if (!weatherData) return <div>Loading</div>;
      
-    const recipes = weatherData.recipes;
+    const recipes = weatherData.recipes[0];
   
     return (
       <div>
         <h1>
-          {this.state.weatherData.recipes[0].title}
-          <img src={this.state.weatherData.recipes[0].image_url} alt=''  />
+          {recipes.title}
+          <img src={recipes.image_url} alt=''  />
         </h1>
-        <p>Current: {this.state.weatherData.count.ingridients}</p>
+        <p>Current: {weatherData.count.ingridients}</p>
       
       </div>
     );
